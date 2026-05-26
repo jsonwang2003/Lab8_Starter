@@ -91,7 +91,7 @@ async function getRecipes() {
     
     // A4. TODO - Loop through each recipe in the RECIPE_URLS array constant
     //            declared above
-    RECIPE_URLS.forEach((url) => {
+    RECIPE_URLS.forEach(async (url) => {
       // A5. TODO - Since we are going to be dealing with asynchronous code, create
       //            a try / catch block. A6-A9 will be in the try portion, A10-A11
       //            will be in the catch portion.
@@ -105,7 +105,7 @@ async function getRecipes() {
         // A7. TODO - For each fetch response, retrieve the JSON from it using .json().
         //            NOTE: .json() is ALSO asynchronous, so you will need to use
         //            "await" again
-        response.json();
+        let recipe = await response.json();
 
         // A8. TODO - Add the new recipe to the recipes array
         requestRecipes.push(recipe);
@@ -114,12 +114,17 @@ async function getRecipes() {
         //            if you have, then save the recipes to storage using the function
         //            we have provided. Then, pass the recipes array to the Promise's
         //            resolve() method.
-        saveRecipesToStorage(requestRecipes);
-        resolve(requestRecipes);
-      } catch {
+        if (requestRecipes.length === RECIPE_URLS.length) 
+        {
+          saveRecipesToStorage(requestRecipes);
+          resolve(requestRecipes);
+        }
+        
+      } catch (error) {
         // A10. TODO - Log any errors from catch using console.error
+        console.error(error);
         // A11. TODO - Pass any errors to the Promise's reject() function
-
+        reject(error);
       }
     });
   });
